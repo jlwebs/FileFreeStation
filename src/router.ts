@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Cookies from 'js-cookie'
 import i18n from "./i18n";
 
@@ -63,11 +63,17 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 });
 
 router.beforeEach((to, from, next) => {
+    if (to.path === '/scan.html') {
+        window.location.href = to.fullPath; // 直接跳转到静态文件
+        return;
+      }
+    
+      // 其他路径正常走路由
     if (to.meta.title) {
         document.title = to.meta.title as string;
     }
