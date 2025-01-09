@@ -1,12 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FileWorker</title>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FileWorker</title>
+  <style>
+    /* 全局样式 */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* 侧边栏样式 */
+    .sidebar {
+      width: 200px;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 侧边栏按钮样式 */
+    .sidebar button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar button:hover {
+      background-color: #2980b9;
+    }
+
+    /* 主内容区域样式 */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: #ecf0f1;
+    }
+  </style>
+</head>
+<body>
+  <!-- 侧边栏 -->
+  <div class="sidebar">
+    <button onclick="window.location.href='./scan.html'">动态二维码传输文件</button>
+  </div>
+
+  <!-- 主内容区域 -->
+  <div class="main-content">
     <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
 </html>
