@@ -7,6 +7,7 @@ import ClipPage from "./pages/ClipPage.vue";
 import FilePage from "./pages/FilePage.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import FileManagePage from "./pages/FileManagePage.vue";
+import ScanPage from "./pages/ScanPage.vue";
 
 const $t = i18n.global.t;
 
@@ -50,6 +51,14 @@ const routes = [
             title: $t("page_title.login"),
         },
         component: LoginPage,
+    },
+    {
+        path: "/scan",
+        name: "scan",
+        meta: {
+            title: "Scan",
+        },
+        component: ScanPage,
     },
 ];
 
