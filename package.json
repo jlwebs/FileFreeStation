@@ -41,7 +41,7 @@
     "@tsconfig/node20": "^20.1.2",
     "@types/codemirror": "^5.60.15",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20.11.10",
+    "@types/node": "^20.17.12",
     "@unocss/transformer-directives": "^0.58.6",
     "@vitejs/plugin-vue": "^5.0.3",
     "@vue/eslint-config-prettier": "^8.0.0",
