@@ -79,7 +79,7 @@ const auth = (env: Env, request: Request) => {
     }
     const expire = url.searchParams.get('expire');
     if (expire === null) return false;
-    if (Date.now() < parseInt(expire)) {
+    if (Date.now() <= parseInt(expire)) {
         return true;
     }
     return false;

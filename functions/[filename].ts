@@ -33,12 +33,15 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     if (response.Metadata['x-store-type'] === "text") {
         headers.set('content-type', 'text/plain;charset=utf-8');
     }
-    headers.set('content-length', response.ContentLength.toString());
+    if (response.ContentLength) {
+        headers.set('content-length', response.ContentLength.toString());
+    }
     headers.set('last-modified', response.LastModified.toUTCString());
 
     headers.set('etag', response.ETag);
 
-    if (headers.get("x-store-visibility") !== "public" && !auth(env, context.request)) {
+    const visibility = headers.get("x-store-visibility");
+    if (visibility && visibility !== "public" && !auth(env, context.request)) {
         return new Response("Not found", { status: 404 });
     }
     return new Response(

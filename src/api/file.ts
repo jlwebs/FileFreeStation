@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PutFile = async (filename: string, file: File | string, visibility: string, type: string = "file") => {
+const PutFile = async (filename: string, file: File | string, visibility: string = "public", type: string = "file") => {
     const url = `/${filename}`;
     const headers = {
         'x-store-visibility': visibility,
