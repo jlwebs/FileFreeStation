@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, type Ref } from 'vue';
-import { formatBytes } from '@/utils/utils';
-import { DeleteFile, ListFiles } from '@/api';
+import { formatBytes } from '../utils/utils';
+import { DeleteFile, ListFiles } from '../api';
 import type { _Object } from '@aws-sdk/client-s3';
+
+const { localStorage } = window;
 
 let uploadedFiles: Ref<_Object[]> = ref([]);
 
@@ -44,8 +46,19 @@ const onDeleteFileClick = async (key?: string) => {
                     <a class="text-lg font-semibold" :href="`/${file.Key}`" target="_blank" :class="{'text-green-500': file.Key?.startsWith('clip_')}">{{ file.Key ? decodeURIComponent(file.Key) : '' }}</a>
                     <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }} · {{ file.LastModified ? new Date(file.LastModified).toLocaleString() : '' }}</div>
                 </div>
-                <div class="ml-auto w-6 h-6 i-mdi-trash-can-outline cursor-pointer"
-                    @click="onDeleteFileClick(file.Key)"></div>
+                <div class="ml-auto flex gap-2">
+                  <div class="w-6 h-6 i-mdi-pencil-outline cursor-pointer"
+                      @click="() => { 
+                        localStorage.setItem('openFile', JSON.stringify({
+                          filename: file.Key || '',
+                          contentUrl: `/${file.Key}`,
+                          timestamp: file.LastModified
+                        }));
+                        $router.push(`/clip?open=${file.Key}`) 
+                      }"></div>
+                  <div class="w-6 h-6 i-mdi-trash-can-outline cursor-pointer"
+                      @click="onDeleteFileClick(file.Key)"></div>
+                </div>
             </div>
         </div>
     </div>

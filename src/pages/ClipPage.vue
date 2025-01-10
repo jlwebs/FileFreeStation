@@ -15,14 +15,25 @@ const editorElement = ref();
 const lastModified = ref("");
 let editor: EditorView;
 
-// 从localStorage获取最新保存的文件
-const getLatestClip = () => {
-  const clip = localStorage.getItem('latestClip');
-  if (clip) {
-    const { filename, content, timestamp } = JSON.parse(clip);
-    return { filename, content, timestamp };
+const isLoading = ref(false);
+const loadError = ref('');
+
+// 获取文件内容
+const fetchFileContent = async (filename: string) => {
+  try {
+    isLoading.value = true;
+    loadError.value = '';
+    const content = await fetch(`/${filename}`).then(res => res.text());
+    const timestamp = new Date().toISOString();
+    lastModified.value = new Date(timestamp).toLocaleString();
+    return { content, timestamp };
+  } catch (error) {
+    console.error('Failed to fetch file:', error);
+    loadError.value = '文件加载失败';
+    throw error;
+  } finally {
+    isLoading.value = false;
   }
-  return null;
 };
 
 // 保存到localStorage
@@ -49,21 +60,38 @@ let startState = EditorState.create({
   ]
 });
 
-onMounted(() => {
+onMounted(async () => {
   editor = new EditorView({
     state: startState,
     parent: editorElement.value,
   });
   
-  // 如果有local参数，尝试从localStorage加载
-  if (route.query.local) {
-    const latestClip = getLatestClip();
-    if (latestClip) {
-      filename.value = latestClip.filename;
+  // 处理open参数
+  if (route.query.open) {
+    const filenameToOpen = route.query.open as string;
+    filename.value = filenameToOpen;
+    try {
+      const { content } = await fetchFileContent(filenameToOpen);
       editor.dispatch({
-        changes: { from: 0, to: editor.state.doc.length, insert: latestClip.content }
+        changes: { from: 0, to: editor.state.doc.length, insert: content }
       });
-      lastModified.value = new Date(latestClip.timestamp).toLocaleString();
+    } catch {
+      editor.dispatch({
+        changes: { from: 0, to: editor.state.doc.length, insert: '' }
+      });
+      lastModified.value = '';
+    }
+  }
+  // 如果有local参数，尝试从localStorage加载
+  else if (route.query.local) {
+    const latestClip = localStorage.getItem('latestClip');
+    if (latestClip) {
+      const { filename: f, content } = JSON.parse(latestClip);
+      filename.value = f;
+      editor.dispatch({
+        changes: { from: 0, to: editor.state.doc.length, insert: content }
+      });
+      lastModified.value = new Date().toLocaleString();
     }
   }
   
@@ -86,6 +114,14 @@ let onSaveBtnClick = async () => {
   await PutFile(filename.value, code.value, clipStore.visibility, "text");
   modified.value = false;
   saveToLocalStorage(filename.value, code.value);
+  if (route.query.open) {
+    const timestamp = new Date().toISOString();
+    localStorage.setItem('openClip', JSON.stringify({
+      filename: filename.value,
+      content: code.value,
+      timestamp
+    }));
+  }
 };
 
 let saveContentKeydown = (e: KeyboardEvent) => {
@@ -132,7 +168,8 @@ onBeforeUnmount(() => {
           上次改过的文本
         </button>
       </div>
-      <div ref="editorElement"></div>
+      <div ref="editorElement" :class="{'opacity-50': isLoading, 'pointer-events-none': isLoading}"></div>
+      <div v-if="loadError" class="text-red-500 text-sm px-2">{{ loadError }}</div>
       <div class="footer p-2 flex items-center">
         <select class="public-select" v-model="clipStore.visibility">
           <option value="private">{{ $t('common.private') }}</option>
