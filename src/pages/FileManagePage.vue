@@ -11,7 +11,7 @@ const refreshFiles = async () => {
     if (res.Contents) {
         uploadedFiles.value = res.Contents.map(file => ({
             ...file,
-            Key: decodeURIComponent(file.Key)
+            Key: file.Key ? decodeURIComponent(file.Key) : ''
         }));
     }
 };
