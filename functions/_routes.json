@@ -1,13 +1,9 @@
 {
-    "version": 1,
+    "version": 2,
     "include": [
         "/*"
     ],
     "exclude": [
-        "scan.html",
-        "/index.html",
-        "/scan.html",
-        "/utils/*",
-        "/assets/*"
+        "scan.html"
     ]
 }
