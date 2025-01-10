@@ -4,9 +4,9 @@
         "/*"
     ],
     "exclude": [
-        "index.html",
-        "scan.html",
-        "favicon.ico",
+        "/index.html",
+        "/scan.html",
+        "/favicon.ico",
         "/utils/*",
         "/assets/*"
     ]
