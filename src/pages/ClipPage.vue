@@ -145,5 +145,87 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
-/* 保持原有样式不变 */
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+.pannel {
+  --uno: my-6 px-4 py-4 max-w-screen-md w-4/5 rounded shadow-md;
+}
+
+.tips-pannel {
+  background-color: #d1e7dd;
+}
+
+.text-area {
+  --uno: rounded max-w-screen-md w-4/5 border-1 border-gray-300;
+  background-color: white;
+}
+
+.text-area .header {
+  background-color: #f5f5f5;
+}
+
+.text-area .footer {
+  --uno: flex flex-row;
+  background-color: #f5f5f5;
+}
+
+.text-area .footer .public-select {
+  --uno: border-1 rounded px-6 py-1.5 text-sm;
+  border-color: #d1d1d1;
+  outline-color: #0969da;
+}
+
+.text-area .footer .save-btn {
+  --uno: rounded px-6 py-1.5 text-sm ml-auto text-white;
+  background-color: #1f883d;
+}
+
+.text-area .footer .save-btn:hover {
+  background-color: #1a7f37;
+}
+
+.text-area .header .filename-input {
+  --uno: border-1 rounded px-3 py-2 text-sm w-60;
+  border-color: #d1d1d1;
+  outline-color: #0969da;
+}
+
+.cm-editor {
+  height: 400px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+.cm-gutter.cm-lineNumbers {
+  background-color: white;
+}
+
+.cm-gutters {
+  border: none !important;
+}
+
+.cm-selectionBackground {
+  background-color: #54aeff66 !important;
+}
+
+.unsave-attention {
+  --uno: i-mdi-circle-small w-8 h-8 ml-auto;
+  color: #9a6700 !important;
+}
+
+.save-attention {
+  --uno: i-mdi-circle-small w-8 h-8 ml-auto;
+  color: #1f883d !important;
+}
 </style>
