@@ -55,6 +55,10 @@ let startState = EditorState.create({
       code.value = update.state.doc.toString();
       if (update.docChanged) {
         modified.value = true;
+        if (autoSaveEnabled.value && code.value !== lastSavedCode.value) {
+          onAutoSaveBtnClick();
+          lastSavedCode.value = code.value;
+        }
       }
     }),
   ]
@@ -118,24 +122,52 @@ let refreshRandomFileName = () => {
 
 const clipStore = useClipStore();
 const saveStatusText = ref('');
+const autoSaveEnabled = ref(true);
+let lastSavedCode = ref('');
 
 let onSaveBtnClick = async () => {
-  saveStatusText.value = '手动保存成功';
-  await PutFile(filename.value, code.value, clipStore.visibility, "text");
-  modified.value = false;
-  saveToLocalStorage(filename.value, code.value);
-  if (route.query.open) {
-    const timestamp = new Date().toISOString();
-    localStorage.setItem('openClip', JSON.stringify({
-      filename: filename.value,
-      content: code.value,
-      timestamp
-    }));
+  try {
+    await PutFile(filename.value, code.value, clipStore.visibility, "text");
+    modified.value = false;
+    saveToLocalStorage(filename.value, code.value);
+    if (route.query.open) {
+      const timestamp = new Date().toISOString();
+      localStorage.setItem('openClip', JSON.stringify({
+        filename: filename.value,
+        content: code.value,
+        timestamp
+      }));
+    }
+    saveStatusText.value = '手动保存成功';
+  } catch {
+    saveStatusText.value = '保存剪贴板内容失败，请重试' 
   }
-  saveStatusText.value = '自动保存成功';
+
   setTimeout(() => {
     saveStatusText.value = '';
   }, 3000);
+};
+
+let onAutoSaveBtnClick = async () => {
+  try {
+    await PutFile(filename.value, code.value, clipStore.visibility, "text");
+    modified.value = false;
+    saveToLocalStorage(filename.value, code.value);
+    if (route.query.open) {
+      const timestamp = new Date().toISOString();
+      localStorage.setItem('openClip', JSON.stringify({
+        filename: filename.value,
+        content: code.value,
+        timestamp
+      }));
+    }
+    saveStatusText.value = '自动保存成功';
+  } catch {
+    saveStatusText.value = '自动保存剪贴板内容失败...';
+    setTimeout(() => {
+      saveStatusText.value = '';
+    }, 3000);
+  }
 };
 
 let saveContentKeydown = (e: KeyboardEvent) => {
@@ -190,15 +222,18 @@ onBeforeUnmount(() => {
           <option value="public">{{ $t('common.public') }}</option>
         </select>
         <div class="text-sm text-gray-500 ml-4" v-if="route.query.local">
-          该文件是本地记录您最近刚修改过的文本
+          本次加载项为本地记载的最近更新过的剪贴板
         </div>
         <div class="text-sm text-gray-500 ml-4" v-if="lastModified">
           最后修改: {{ lastModified }}
         </div>
+        <div class="flex items-center ml-4">
+          <input type="checkbox" id="auto-save" v-model="autoSaveEnabled" class="mr-2" />
+          <label for="auto-save" class="text-sm">变动时自动保存</label>
+        </div>
         <div style="margin-left: auto;"></div>
-        <div class="save-status" v-if="saveStatusText">{{ saveStatusText }}</div>
+        <div class="save-status" :class="{'error': saveStatusText.includes('失败')}" v-if="saveStatusText">{{ saveStatusText }}</div>
         <button class="save-btn ml-2" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
-
       </div>
     </div>
   </div>
@@ -248,6 +283,11 @@ body,
   background-color: #1f883d;
   animation: fadeOut 3s ease-in-out forwards;
   margin-left: auto;
+  transition: background-color 0.3s;
+}
+
+.text-area .footer .save-status.error {
+  background-color: #dc3545;
 }
 
 @keyframes fadeOut {
