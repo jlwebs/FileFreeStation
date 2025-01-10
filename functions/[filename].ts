@@ -19,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     try {
         response = await s3.send(command);
     } catch (e) {
-        return new Response("S3 Not found :"+ e+ ":"+JSON.stringify(context, null, 2), { status: 404 });
+        return new Response("S3 Not found :"+ e, { status: 404 });
     }
     const headers = new Headers();
     for (const [key, value] of Object.entries(response.Metadata)) {
