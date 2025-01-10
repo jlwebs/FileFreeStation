@@ -9,7 +9,10 @@ let uploadedFiles: Ref<_Object[]> = ref([]);
 const refreshFiles = async () => {
     const res = await ListFiles();
     if (res.Contents) {
-        uploadedFiles.value = res.Contents;
+        uploadedFiles.value = res.Contents.map(file => ({
+            ...file,
+            Key: decodeURIComponent(file.Key)
+        }));
     }
 };
 
