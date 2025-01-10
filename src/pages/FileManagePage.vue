@@ -42,7 +42,7 @@ const onDeleteFileClick = async (key?: string) => {
                 <div class="w-10 h-10 i-mdi-file-document-outline" :class="{'text-green-500': file.Key?.startsWith('clip_')}"></div>
                 <div class="flex flex-col">
                     <a class="text-lg font-semibold" :href="`/${file.Key}`" target="_blank" :class="{'text-green-500': file.Key?.startsWith('clip_')}">{{ file.Key ? decodeURIComponent(file.Key) : '' }}</a>
-                    <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }}</div>
+                    <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }} · {{ file.LastModified ? new Date(file.LastModified).toLocaleString() : '' }}</div>
                 </div>
                 <div class="ml-auto w-6 h-6 i-mdi-trash-can-outline cursor-pointer"
                     @click="onDeleteFileClick(file.Key)"></div>
