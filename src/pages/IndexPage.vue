@@ -16,7 +16,7 @@ if (i18nStore.locale !== "") {
 }
 
 let onClipAreaClick = () => {
-  router.push("/clip");
+  router.push({ path: '/clip', query: { mode: 'clip' } });
 };
 
 let onUploadClick = () => {
