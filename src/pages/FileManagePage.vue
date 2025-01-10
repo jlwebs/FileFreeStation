@@ -11,8 +11,7 @@ const route = useRoute();
 let uploadedFiles: Ref<_Object[]> = ref([]);
 
 const refreshFiles = async () => {
-    const mode = route.query.mode;
-    const res = await ListFiles(mode === 'clip' ? 'clip_' : undefined);
+    const res = await ListFiles();
     if (res.Contents) {
         uploadedFiles.value = res.Contents.map(file => ({
             ...file,
