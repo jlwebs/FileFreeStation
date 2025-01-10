@@ -2,7 +2,8 @@
     "version": 1,
     "exclude": [
         "/index.html",
-        "/scan.html"
+        "/scan.html",
+        "/scan"
     ],
     "include": [
         "/*"
