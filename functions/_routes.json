@@ -6,7 +6,6 @@
     "exclude": [
         "/index.html",
         "/scan.html",
-        "/favicon.ico",
         "/utils/*",
         "/assets/*"
     ]
