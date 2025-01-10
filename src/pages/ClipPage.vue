@@ -77,7 +77,7 @@ onMounted(async () => {
       });
     } catch {
       editor.dispatch({
-        changes: { from: 0, to: editor.state.doc.length, insert: '' }
+        changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
       });
       lastModified.value = '';
     }
@@ -86,12 +86,20 @@ onMounted(async () => {
   else if (route.query.local) {
     const latestClip = localStorage.getItem('latestClip');
     if (latestClip) {
-      const { filename: f, content } = JSON.parse(latestClip);
+      try {
+      const { filename: f } = JSON.parse(latestClip);
+      const { content } = await fetchFileContent(f);
       filename.value = f;
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: content }
       });
       lastModified.value = new Date().toLocaleString();
+    }catch{
+      editor.dispatch({
+        changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
+      });
+      lastModified.value = '';
+    }
     }
   }
   
@@ -222,7 +230,7 @@ body,
 }
 
 .text-area .footer {
-  --uno: flex flex-row items-center justify-between;
+  --uno: flex flex-row items-center;
   background-color: #f5f5f5;
   padding: 0.5rem;
 }
@@ -237,6 +245,7 @@ body,
   --uno: rounded px-6 py-1.5 text-sm ml-2 text-white;
   background-color: #1f883d;
   animation: fadeOut 3s ease-in-out forwards;
+  margin-left: auto;
 }
 
 @keyframes fadeOut {
@@ -248,7 +257,7 @@ body,
   --uno: rounded px-2 py-0.5 text-sm text-white;
   background-color: #1f883d;
   min-width: auto;
-  margin-left: 0.5rem;
+  margin-left: auto;
   white-space: nowrap;
 }
 
