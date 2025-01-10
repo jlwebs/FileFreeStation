@@ -125,6 +125,12 @@ onBeforeUnmount(() => {
         <input class="filename-input monospace" type="text" v-model="filename" :placeholder="$t('common.filename')" />
         <button @click="refreshRandomFileName" class="i-mdi-refresh ml-1 w-5 h-5"></button>
         <div :class="modified ? 'unsave-attention' : 'save-attention'"></div>
+        <button 
+          class="local-btn ml-2 px-4 py-1 rounded text-sm text-white bg-blue-500 hover:bg-blue-600"
+          @click="$router.push('/clip?local=true')"
+        >
+          上次改过的文本
+        </button>
       </div>
       <div ref="editorElement"></div>
       <div class="footer p-2 flex items-center">
