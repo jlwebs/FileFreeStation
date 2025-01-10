@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, type Ref } from 'vue';
 import { useI18n } from "vue-i18n";
 import useI18nStore from "../store/i18n";
 import { useRouter } from "vue-router";
@@ -24,13 +24,17 @@ let onUploadClick = () => {
   router.push("/file");
 };
 
-const tooltipFile = ref(null);
-const tooltipClip = ref(null);
+const tooltipFile: Ref<HTMLElement | null> = ref(null);
+const tooltipClip: Ref<HTMLElement | null> = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
-    tooltipFile.value.classList.add('fade-out');
-    tooltipClip.value.classList.add('fade-out');
+    if (tooltipFile.value) {
+      tooltipFile.value.classList.add('fade-out');
+    }
+    if (tooltipClip.value) {
+      tooltipClip.value.classList.add('fade-out');
+    }
   }, 3000);
 });
 </script>
@@ -115,9 +119,10 @@ onMounted(() => {
 }
 
 .tooltip {
+  width:50px;
   position: absolute;
   top: 50%;
-  right: 3%;
+  right: 13%;
   transform: translateY(-50%);
   background-color: rgba(0, 123, 255, 0.8);
   color: white;
@@ -127,7 +132,8 @@ onMounted(() => {
   z-index: 10;
   opacity: 1;
   transition: opacity 3s ease-in-out;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .tooltip.fade-out {

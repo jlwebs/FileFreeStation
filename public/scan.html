@@ -281,7 +281,7 @@ repeating-linear-gradient(45deg, rgb(0,0,0) 0px, rgb(153,197,206) 1px,transparen
 
 <div id="nav-container" class="mode-4c">
     <div class="bg" onclick="Main.blurNav();"></div>
-    <button onclick="window.location.href='/'">返回首页</button>
+    
     <button id="nav-button" tabindex="0" onclick="Main.clickNav();">
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
@@ -289,11 +289,13 @@ repeating-linear-gradient(45deg, rgb(0,0,0) 0px, rgb(153,197,206) 1px,transparen
       <span class="icon-bar"></span>
     </button>
     <div id="nav-content" tabindex="-1">
+      <li><a class="attention" id="nav-find-file-link" href="javascript:void(0)" onclick="window.location.href='/'">返回首页</a></li>
       <span id="current-file">无文件选中</span>
       <ul>
         <li><a class="attention" id="nav-find-file-link" href="javascript:void(0)" onclick="Main.clickFileInput()">打开文件</a></li>
         <li><a href="javascript:void(0)" onclick="Main.toggleFullscreen()">全屏</a></li>
         <hr>
+        <li><a href="javascript:void(0)" onclick="Main.toggleFullscreen()">全屏</a></li>
         <li><a class="mode-b" href="javascript:void(0)" onclick="Main.setMode('B')">模式B</a></li>
         <li><a class="mode-4c" href="javascript:void(0)" onclick="Main.setMode('4C')">4C <small>(old apps)</small></a></li>
         <li class="small"><a href="">copyright</a></li>
@@ -563,7 +565,6 @@ window.addEventListener('keydown', function(e) {
         e.key == 'Backspace' || e.keyCode == 8 ||
         e.key == 'End' || e.keyCode == 35 ||
         e.key == 'Home' || e.keyCode == 36
-    ) {
       Main.blurNav();
     }
     else if (e.key == 'Tab' || e.keyCode == 9 ||
