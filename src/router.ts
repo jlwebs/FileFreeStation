@@ -12,6 +12,15 @@ import ScanPage from "./pages/ScanPage.vue";
 const $t = i18n.global.t;
 
 const routes = [
+    
+    {
+        path: "/scan",
+        name: "scan",
+        meta: {
+            title: "Scan",
+        },
+        component: ScanPage,
+    },
     {
         path: "/",
         name: "index",
@@ -51,15 +60,7 @@ const routes = [
             title: $t("page_title.login"),
         },
         component: LoginPage,
-    },
-    {
-        path: "/scan",
-        name: "scan",
-        meta: {
-            title: "Scan",
-        },
-        component: ScanPage,
-    },
+    }
 ];
 
 const router = createRouter({

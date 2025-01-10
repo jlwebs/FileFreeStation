@@ -23,7 +23,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     try {
         response = await s3.send(command);
     } catch (e) {
-        return new Response("Not found", { status: 404 });
+        return new Response("S3 Not found", { status: 404 });
     }
     return new Response(JSON.stringify(response), { status: 200 });
 }

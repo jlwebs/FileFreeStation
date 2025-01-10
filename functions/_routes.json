@@ -4,6 +4,7 @@
         "/*"
     ],
     "exclude": [
+        "scan.html",
         "/index.html",
         "/scan.html",
         "/utils/*",
