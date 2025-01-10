@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useI18n } from "vue-i18n";
 import useI18nStore from "../store/i18n";
 import { useRouter } from "vue-router";
@@ -22,6 +23,16 @@ let onClipAreaClick = () => {
 let onUploadClick = () => {
   router.push("/file");
 };
+
+const tooltipFile = ref(null);
+const tooltipClip = ref(null);
+
+onMounted(() => {
+  setTimeout(() => {
+    tooltipFile.value.classList.add('fade-out');
+    tooltipClip.value.classList.add('fade-out');
+  }, 3000);
+});
 </script>
 
 <template>
@@ -31,6 +42,7 @@ let onUploadClick = () => {
         <router-link to="/filemanage" class="link-hint">{{ $t("index.file_channel_title") }}</router-link>
       </div>
       <div class="upload-area" @click="onUploadClick"></div>
+      <div class="tooltip" ref="tooltipFile">点击开始上传{{ $t("index.file_channel_title") }}</div>
     </div>
     <div class="pannel clip-pannel">
       <div class="text-2xl flex flex-row items-center">
@@ -43,6 +55,7 @@ let onUploadClick = () => {
         </button>
       </div>
       <div class="clip-area" @click="onClipAreaClick"></div>
+      <div class="tooltip" ref="tooltipClip">点击开始上传{{ $t("index.clip_channel_title") }}</div>
     </div>
     <!-- <div class="pannel tips-pannel">{{ $t("index.tips_content") }}</div> -->
     <select v-model="$i18n.locale" class="locale-changer" @change="updateLocale($i18n.locale)">
@@ -54,6 +67,8 @@ let onUploadClick = () => {
 <style scoped>
 .pannel {
   --uno: my-6 px-4 py-4 max-w-screen-md w-4/5 rounded shadow-md;
+  position: relative;
+  margin-right: 15px;
 }
 
 .file-pannel {
@@ -97,6 +112,37 @@ let onUploadClick = () => {
   border: grey 1px solid;
   border-radius: 6px;
   padding: 2px 4px;
+}
+
+.tooltip {
+  position: absolute;
+  top: 50%;
+  right: 3%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-right: -160px; /* Adjust as needed */
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 3s ease-in-out;
+  white-space: nowrap;
+}
+
+.tooltip.fade-out {
+  opacity: 0;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #007bff transparent transparent;
 }
 </style>
 
