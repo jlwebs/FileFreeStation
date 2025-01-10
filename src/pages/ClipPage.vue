@@ -189,14 +189,15 @@ onBeforeUnmount(() => {
           <option value="private">{{ $t('common.private') }}</option>
           <option value="public">{{ $t('common.public') }}</option>
         </select>
+        <div class="text-sm text-gray-500 ml-4" v-if="route.query.local">
+          该文件是本地记录您最近刚修改过的文本
+        </div>
         <div class="text-sm text-gray-500 ml-4" v-if="lastModified">
           最后修改: {{ lastModified }}
         </div>
         <div class="save-status" v-if="saveStatusText">{{ saveStatusText }}</div>
         <button class="save-btn ml-2" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
-        <div class="text-sm text-gray-500 ml-4" v-if="route.query.local">
-          该文件是本地记录您最近刚修改过的文本
-        </div>
+
       </div>
     </div>
   </div>
@@ -257,7 +258,6 @@ body,
   --uno: rounded px-2 py-0.5 text-sm text-white;
   background-color: #1f883d;
   min-width: auto;
-  margin-left: auto;
   white-space: nowrap;
 }
 
