@@ -19,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     try {
         response = await s3.send(command);
     } catch (e) {
-        return new Response("Not found", { status: 404 });
+        return new Response("S3 Not found", { status: 404 });
     }
     const headers = new Headers();
     for (const [key, value] of Object.entries(response.Metadata)) {
@@ -42,7 +42,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     const visibility = headers.get("x-store-visibility");
     if (visibility && visibility !== "public" && !auth(env, context.request)) {
-        return new Response("Not found", { status: 404 });
+        return new Response("Not public page - "+visibility, { status: 404 });
     }
     return new Response(
         response.Body.transformToWebStream(),
