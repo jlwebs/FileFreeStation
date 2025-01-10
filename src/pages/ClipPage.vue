@@ -195,6 +195,7 @@ onBeforeUnmount(() => {
         <div class="text-sm text-gray-500 ml-4" v-if="lastModified">
           最后修改: {{ lastModified }}
         </div>
+        <div style="margin-left: auto;"></div>
         <div class="save-status" v-if="saveStatusText">{{ saveStatusText }}</div>
         <button class="save-btn ml-2" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
 
