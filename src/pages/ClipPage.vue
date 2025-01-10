@@ -109,8 +109,10 @@ let refreshRandomFileName = () => {
 };
 
 const clipStore = useClipStore();
+const saveStatusText = ref('');
 
 let onSaveBtnClick = async () => {
+  saveStatusText.value = '手动保存成功';
   await PutFile(filename.value, code.value, clipStore.visibility, "text");
   modified.value = false;
   saveToLocalStorage(filename.value, code.value);
@@ -122,6 +124,10 @@ let onSaveBtnClick = async () => {
       timestamp
     }));
   }
+  saveStatusText.value = '自动保存成功';
+  setTimeout(() => {
+    saveStatusText.value = '';
+  }, 3000);
 };
 
 let saveContentKeydown = (e: KeyboardEvent) => {
@@ -178,7 +184,8 @@ onBeforeUnmount(() => {
         <div class="text-sm text-gray-500 ml-4" v-if="lastModified">
           最后修改: {{ lastModified }}
         </div>
-        <button class="save-btn ml-auto" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
+        <div class="save-status" v-if="saveStatusText">{{ saveStatusText }}</div>
+        <button class="save-btn ml-2" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
         <div class="text-sm text-gray-500 ml-4" v-if="route.query.local">
           该文件是本地记录您最近刚修改过的文本
         </div>
@@ -215,8 +222,9 @@ body,
 }
 
 .text-area .footer {
-  --uno: flex flex-row;
+  --uno: flex flex-row items-center justify-between;
   background-color: #f5f5f5;
+  padding: 0.5rem;
 }
 
 .text-area .footer .public-select {
@@ -225,9 +233,23 @@ body,
   outline-color: #0969da;
 }
 
-.text-area .footer .save-btn {
-  --uno: rounded px-6 py-1.5 text-sm ml-auto text-white;
+.text-area .footer .save-status {
+  --uno: rounded px-6 py-1.5 text-sm ml-2 text-white;
   background-color: #1f883d;
+  animation: fadeOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.text-area .footer .save-btn {
+  --uno: rounded px-2 py-0.5 text-sm text-white;
+  background-color: #1f883d;
+  min-width: auto;
+  margin-left: 0.5rem;
+  white-space: nowrap;
 }
 
 .text-area .footer .save-btn:hover {
