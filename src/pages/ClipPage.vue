@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
         <div :class="modified ? 'unsave-attention' : 'save-attention'"></div>
         <button 
           class="local-btn ml-2 px-4 py-1 rounded text-sm text-white bg-blue-500 hover:bg-blue-600"
-          @click="$router.push('/clip?local=true')"
+          @click="$router.push('/clip?local=true'); window.location.reload()"
         >
           上次改过的文本
         </button>
