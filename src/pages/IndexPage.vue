@@ -36,7 +36,7 @@ let onUploadClick = () => {
       <div class="text-2xl flex flex-row items-center">
         <router-link to="/filemanage" class="link-hint">{{ $t("index.clip_channel_title") }}</router-link>
         <button 
-          class="local-btn ml-2 px-4 py-1 rounded text-sm text-white bg-blue-500 hover:bg-blue-600"
+          class="local-btn ml-auto px-4 py-1 rounded text-sm text-white bg-blue-500 hover:bg-blue-600"
           @click="$router.push('/clip?local=true')"
         >
           上次改过的文本
