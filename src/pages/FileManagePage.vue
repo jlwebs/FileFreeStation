@@ -11,7 +11,7 @@ const { localStorage } = window;
 const route = useRoute();
 
 let uploadedFiles: Ref<_Object[]> = ref([]);
-const isEnabled = ref(false);
+const isDeleteEnabled = ref(false);
 const hoverStartTime = ref<number | null>(null);
 const hoveredItemKey = ref<string | null>(null);
 const showTooltip = ref(false);
@@ -31,7 +31,7 @@ onBeforeMount(async () => {
 });
 
 const onDeleteFileClick = async (key?: string) => {
-    if (!key || !isEnabled.value) {
+    if (!key || !isDeleteEnabled.value) {
         return;
     }
     await DeleteFile(key);
@@ -39,20 +39,20 @@ const onDeleteFileClick = async (key?: string) => {
 };
 
 const startHoverTimer = (key: string) => {
-    if (isEnabled.value) return;
+    if (isDeleteEnabled.value) return;
     hoveredItemKey.value = key;
     hoverStartTime.value = Date.now();
     showTooltip.value = true;
     useTimeoutFn(() => {
         if (hoveredItemKey.value === key && Date.now() - (hoverStartTime.value || 0) >= 3000) {
-            isEnabled.value = true;
+            isDeleteEnabled.value = true;
             showTooltip.value = false;
         }
     }, 3000);
 };
 
 const clearHoverTimer = () => {
-    if (isEnabled.value) return;
+    if (isDeleteEnabled.value) return;
     hoveredItemKey.value = null;
     hoverStartTime.value = null;
     showTooltip.value = false;
@@ -70,32 +70,30 @@ const clearHoverTimer = () => {
                     const bIsClip = b.Key?.startsWith('clip_') ? 1 : 0;
                     return aIsClip - bIsClip;
                 })" :key="file.Key"
-                class="w-full flex flex-row items-center mt-4 rounded border-1 border-gray-300 px-2 py-1 relative"
-                :class="{ 'opacity-50': !isEnabled }">
+                class="w-full flex flex-row items-center mt-4 rounded border-1 border-gray-300 px-2 py-1 relative">
                 <div class="w-10 h-10 i-mdi-file-document-outline" :class="{'text-green-500': file.Key?.startsWith('clip_')}"></div>
                 <div class="flex flex-col">
                     <a class="text-lg font-semibold" :class="{'text-green-500': file.Key?.startsWith('clip_')}"
-                        :href="isEnabled ? `/${file.Key}` : undefined" 
-                        :target="isEnabled ? '_blank' : undefined">
+                        :href="`/${file.Key}`" 
+                        target="_blank">
                         {{ file.Key ? decodeURIComponent(file.Key) : '' }}
                     </a>
                     <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }} · {{ file.LastModified ? new Date(file.LastModified).toLocaleString() : '' }}</div>
                 </div>
                 <div class="ml-auto flex gap-2">
-                    <div v-if="route.query.mode === 'clip'" class="w-6 h-6 i-mdi-pencil-outline"
-                        :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
-                        @click="isEnabled && (() => { 
+                    <div v-if="route.query.mode === 'clip'" class="w-6 h-6 i-mdi-pencil-outline cursor-pointer"
+                        @click="() => { 
                             localStorage.setItem('openFile', JSON.stringify({
                                 filename: file.Key || '',
                                 contentUrl: `/${file.Key}`,
                                 timestamp: file.LastModified
                             }));
                             $router.push(`/clip?open=${file.Key}`) 
-                        })()"></div>
+                        }"></div>
                     <n-tooltip placement="right" trigger="hover" :show="showTooltip && hoveredItemKey === file.Key">
                         <template #trigger>
                             <div class="w-6 h-6 i-mdi-trash-can-outline"
-                                :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
+                                :class="{ 'cursor-pointer': isDeleteEnabled, 'cursor-not-allowed': !isDeleteEnabled, 'opacity-50': !isDeleteEnabled }"
                                 @mouseenter="startHoverTimer(file.Key || '')"
                                 @mouseleave="clearHoverTimer()"
                                 @click="onDeleteFileClick(file.Key)">
