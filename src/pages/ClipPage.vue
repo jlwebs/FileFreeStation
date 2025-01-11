@@ -144,9 +144,9 @@ let saveFilter = () =>{
           saveStatusText.value = '';
         });
       }, 3000);
-    return false;
+    return true;
   }
-  return true
+  return false
 }
 let onSaveBtnClick = async () => {
   if(saveFilter()) return;
