@@ -4,11 +4,16 @@ import { formatBytes } from '../utils/utils';
 import { DeleteFile, ListFiles } from '../api';
 import type { _Object } from '@aws-sdk/client-s3';
 import { useRoute } from 'vue-router';
+import { useTimeoutFn } from '@vueuse/core';
+import { NTooltip } from 'naive-ui';
 
 const { localStorage } = window;
 const route = useRoute();
 
 let uploadedFiles: Ref<_Object[]> = ref([]);
+const isEnabled = ref(false);
+const hoverStartTime = ref<number | null>(null);
+const hoveredItemKey = ref<string | null>(null);
 
 const refreshFiles = async () => {
     const res = await ListFiles();
@@ -25,11 +30,28 @@ onBeforeMount(async () => {
 });
 
 const onDeleteFileClick = async (key?: string) => {
-    if (!key) {
+    if (!key || !isEnabled.value) {
         return;
     }
     await DeleteFile(key);
     await refreshFiles();
+};
+
+const startHoverTimer = (key: string) => {
+    if (isEnabled.value) return;
+    hoveredItemKey.value = key;
+    hoverStartTime.value = Date.now();
+    useTimeoutFn(() => {
+        if (hoveredItemKey.value === key && Date.now() - (hoverStartTime.value || 0) >= 3000) {
+            isEnabled.value = true;
+        }
+    }, 3000);
+};
+
+const clearHoverTimer = () => {
+    if (isEnabled.value) return;
+    hoveredItemKey.value = null;
+    hoverStartTime.value = null;
 };
 </script>
 
@@ -44,24 +66,39 @@ const onDeleteFileClick = async (key?: string) => {
                     const bIsClip = b.Key?.startsWith('clip_') ? 1 : 0;
                     return aIsClip - bIsClip;
                 })" :key="file.Key"
-                class="w-full flex flex-row items-center mt-4 rounded border-1 border-gray-300 px-2 py-1">
+                class="w-full flex flex-row items-center mt-4 rounded border-1 border-gray-300 px-2 py-1"
+                :class="{ 'opacity-50': !isEnabled }"
+                @mouseenter="startHoverTimer(file.Key || '')"
+                @mouseleave="clearHoverTimer()">
                 <div class="w-10 h-10 i-mdi-file-document-outline" :class="{'text-green-500': file.Key?.startsWith('clip_')}"></div>
                 <div class="flex flex-col">
-                    <a class="text-lg font-semibold" :href="`/${file.Key}`" target="_blank" :class="{'text-green-500': file.Key?.startsWith('clip_')}">{{ file.Key ? decodeURIComponent(file.Key) : '' }}</a>
+                    <n-tooltip trigger="hover" v-if="!isEnabled">
+                        <template #trigger>
+                            <a class="text-lg font-semibold" :class="{'text-green-500': file.Key?.startsWith('clip_')}">
+                                {{ file.Key ? decodeURIComponent(file.Key) : '' }}
+                            </a>
+                        </template>
+                        停留3秒后可用
+                    </n-tooltip>
+                    <a v-else class="text-lg font-semibold" :href="`/${file.Key}`" target="_blank" :class="{'text-green-500': file.Key?.startsWith('clip_')}">
+                        {{ file.Key ? decodeURIComponent(file.Key) : '' }}
+                    </a>
                     <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }} · {{ file.LastModified ? new Date(file.LastModified).toLocaleString() : '' }}</div>
                 </div>
                 <div class="ml-auto flex gap-2">
-                  <div v-if="route.query.mode === 'clip'" class="w-6 h-6 i-mdi-pencil-outline cursor-pointer"
-                      @click="() => { 
-                        localStorage.setItem('openFile', JSON.stringify({
-                          filename: file.Key || '',
-                          contentUrl: `/${file.Key}`,
-                          timestamp: file.LastModified
-                        }));
-                        $router.push(`/clip?open=${file.Key}`) 
-                      }"></div>
-                  <div class="w-6 h-6 i-mdi-trash-can-outline cursor-pointer"
-                      @click="onDeleteFileClick(file.Key)"></div>
+                    <div v-if="route.query.mode === 'clip'" class="w-6 h-6 i-mdi-pencil-outline"
+                        :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
+                        @click="isEnabled && (() => { 
+                            localStorage.setItem('openFile', JSON.stringify({
+                                filename: file.Key || '',
+                                contentUrl: `/${file.Key}`,
+                                timestamp: file.LastModified
+                            }));
+                            $router.push(`/clip?open=${file.Key}`) 
+                        })()"></div>
+                    <div class="w-6 h-6 i-mdi-trash-can-outline"
+                        :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
+                        @click="onDeleteFileClick(file.Key)"></div>
                 </div>
             </div>
         </div>
