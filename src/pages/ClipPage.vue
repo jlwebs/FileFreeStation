@@ -38,7 +38,6 @@ const fetchFileContent = async (filename: string) => {
     throw error;
   } finally {
     isLoading.value = false;
-    isFirstLoad.value = false;
   }
 };
 
@@ -65,6 +64,7 @@ let startState = EditorState.create({
           onAutoSaveBtnClick();
           lastSavedCode.value = code.value;
         }
+        isFirstLoad.value = false;
       }
     }),
   ]
