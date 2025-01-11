@@ -43,14 +43,14 @@ onMounted(() => {
   <div class="flex flex-col items-center">
     <div class="pannel file-pannel">
       <div class="text-2xl flex flex-row items-center">
-        <router-link to="/filemanage" class="link-hint">{{ $t("index.file_channel_title") }}</router-link>
+        <router-link to="/filemanage" class="link-hint">{{"历史" + $t("index.file_channel_title") +"👈"}}</router-link>
       </div>
       <div class="upload-area" @click="onUploadClick"></div>
       <div class="tooltip" ref="tooltipFile">点击开始上传{{ $t("index.file_channel_title") }}</div>
     </div>
     <div class="pannel clip-pannel">
       <div class="text-2xl flex flex-row items-center">
-        <router-link :to="{ path: '/filemanage', query: { mode: 'clip' }}" class="link-hint">{{ $t("index.clip_channel_title") }}</router-link>
+        <router-link :to="{ path: '/filemanage', query: { mode: 'clip' }}" class="link-hint">{{ "历史"+$t("index.clip_channel_title")+"👈" }}</router-link>
         <button 
           class="local-btn ml-auto px-4 py-1 rounded text-sm text-white bg-blue-500 hover:bg-blue-600"
           @click="$router.push('/clip?local=true')"
