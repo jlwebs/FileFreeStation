@@ -71,21 +71,14 @@ const clearHoverTimer = () => {
                     return aIsClip - bIsClip;
                 })" :key="file.Key"
                 class="w-full flex flex-row items-center mt-4 rounded border-1 border-gray-300 px-2 py-1 relative"
-                :class="{ 'opacity-50': !isEnabled }"
-                @mouseenter="startHoverTimer(file.Key || '')"
-                @mouseleave="clearHoverTimer()">
+                :class="{ 'opacity-50': !isEnabled }">
                 <div class="w-10 h-10 i-mdi-file-document-outline" :class="{'text-green-500': file.Key?.startsWith('clip_')}"></div>
                 <div class="flex flex-col">
-                    <n-tooltip placement="right" trigger="hover" :show="showTooltip && hoveredItemKey === file.Key">
-                        <template #trigger>
-                            <a class="text-lg font-semibold" :class="{'text-green-500': file.Key?.startsWith('clip_')}"
-                               :href="isEnabled ? `/${file.Key}` : undefined" 
-                               :target="isEnabled ? '_blank' : undefined">
-                                {{ file.Key ? decodeURIComponent(file.Key) : '' }}
-                            </a>
-                        </template>
-                        停留3秒后可用
-                    </n-tooltip>
+                    <a class="text-lg font-semibold" :class="{'text-green-500': file.Key?.startsWith('clip_')}"
+                        :href="isEnabled ? `/${file.Key}` : undefined" 
+                        :target="isEnabled ? '_blank' : undefined">
+                        {{ file.Key ? decodeURIComponent(file.Key) : '' }}
+                    </a>
                     <div class="text-sm text-gray">{{ formatBytes(file.Size ?? 0) }} · {{ file.LastModified ? new Date(file.LastModified).toLocaleString() : '' }}</div>
                 </div>
                 <div class="ml-auto flex gap-2">
@@ -99,9 +92,17 @@ const clearHoverTimer = () => {
                             }));
                             $router.push(`/clip?open=${file.Key}`) 
                         })()"></div>
-                    <div class="w-6 h-6 i-mdi-trash-can-outline"
-                        :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
-                        @click="onDeleteFileClick(file.Key)"></div>
+                    <n-tooltip placement="right" trigger="hover" :show="showTooltip && hoveredItemKey === file.Key">
+                        <template #trigger>
+                            <div class="w-6 h-6 i-mdi-trash-can-outline"
+                                :class="{ 'cursor-pointer': isEnabled, 'cursor-not-allowed': !isEnabled }"
+                                @mouseenter="startHoverTimer(file.Key || '')"
+                                @mouseleave="clearHoverTimer()"
+                                @click="onDeleteFileClick(file.Key)">
+                            </div>
+                        </template>
+                        停留3秒后可用
+                    </n-tooltip>
                 </div>
             </div>
         </div>
@@ -119,5 +120,9 @@ body,
 
 :root {
     --n-tooltip-color: rgba(0, 0, 0, 0.85);
+}
+
+.n-tooltip {
+    z-index: 1000;
 }
 </style>
