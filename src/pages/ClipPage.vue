@@ -285,6 +285,11 @@ body,
   animation: fadeOut 3s ease-in-out forwards;
   margin-left: auto;
   transition: background-color 0.3s;
+  animation-fill-mode: forwards;
+}
+
+.text-area .footer .save-status[style*="opacity: 0"] {
+  display: none;
 }
 
 .text-area .footer .save-status.error {
