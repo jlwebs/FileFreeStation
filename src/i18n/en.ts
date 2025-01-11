@@ -22,5 +22,6 @@ export default {
         file: 'Files',
         login: 'Login',
         filemanage: 'File Manage',
+        clipmanage: 'Clipboard Manage',
     }
 }

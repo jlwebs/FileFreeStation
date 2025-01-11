@@ -22,5 +22,6 @@ export default {
         file: '历史文件',
         login: '登录',
         filemanage: '文件管理',
+        clipmanage: '剪贴板管理',
     }
 }

@@ -35,7 +35,7 @@ const onDeleteFileClick = async (key?: string) => {
 
 <template>
     <div class="flex flex-col items-center mt-5">
-        <h1 class="text-lg">{{ $t("page_title.filemanage") }}</h1>
+        <h1 class="text-lg">{{ route.query.mode === 'clip' ? $t("page_title.clipmanage") : $t("page_title.filemanage") }}</h1>
         <div class="px-4 py-4 max-w-screen-md w-4/5">
             <div v-for="file in uploadedFiles
                 .filter(file => route.query.mode !== 'clip' || file.Key?.startsWith('clip_'))
