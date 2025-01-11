@@ -19,6 +19,8 @@ let editor: EditorView;
 
 const isLoading = ref(false);
 const loadError = ref('');
+const isFirstLoad = ref(true);
+const isLoadedSuccessfully = ref(false);
 
 // 获取文件内容
 const fetchFileContent = async (filename: string) => {
@@ -28,6 +30,7 @@ const fetchFileContent = async (filename: string) => {
     const content = await fetch(`/${filename}`).then(res => res.text());
     const timestamp = new Date().toISOString();
     lastModified.value = new Date(timestamp).toLocaleString();
+    isLoadedSuccessfully.value = true;
     return { content, timestamp };
   } catch (error) {
     console.error('Failed to fetch file:', error);
@@ -35,6 +38,7 @@ const fetchFileContent = async (filename: string) => {
     throw error;
   } finally {
     isLoading.value = false;
+    isFirstLoad.value = false;
   }
 };
 
@@ -57,7 +61,7 @@ let startState = EditorState.create({
       code.value = update.state.doc.toString();
       if (update.docChanged) {
         modified.value = true;
-        if (autoSaveEnabled.value && code.value !== lastSavedCode.value) {
+        if (!isFirstLoad.value && autoSaveEnabled.value && code.value !== lastSavedCode.value) {
           onAutoSaveBtnClick();
           lastSavedCode.value = code.value;
         }
@@ -74,6 +78,7 @@ onMounted(async () => {
   
   // 处理open参数
   if (route.query.open) {
+    isLoadedSuccessfully.value = false;
     const filenameToOpen = route.query.open as string;
     filename.value = filenameToOpen;
     try {
@@ -81,6 +86,7 @@ onMounted(async () => {
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: content }
       });
+      isLoadedSuccessfully.value = true;
     } catch {
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
@@ -90,6 +96,7 @@ onMounted(async () => {
   }
   // 如果有local参数，尝试从localStorage加载
   else if (route.query.local) {
+    isLoadedSuccessfully.value = false;
     const latestClip = localStorage.getItem('latestClip');
     if (latestClip) {
       try {
@@ -100,6 +107,7 @@ onMounted(async () => {
         changes: { from: 0, to: editor.state.doc.length, insert: content }
       });
       lastModified.value = new Date().toLocaleString();
+      isLoadedSuccessfully.value = true;
     }catch{
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
@@ -128,6 +136,7 @@ const autoSaveEnabled = ref(true);
 let lastSavedCode = ref('');
 
 let onSaveBtnClick = async () => {
+  if (!isLoadedSuccessfully.value) return;
   saveStatusText.value = '';
   try {
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
@@ -155,6 +164,7 @@ let onSaveBtnClick = async () => {
 };
 
 let onAutoSaveBtnClick = async () => {
+  if (!isLoadedSuccessfully.value) return;
   try {
     saveStatusText.value = '';
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
