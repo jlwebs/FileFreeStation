@@ -88,6 +88,7 @@ onMounted(async () => {
       });
       isLoadedSuccessfully.value = true;
     } catch {
+      saveFilter();
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
       });
@@ -109,6 +110,7 @@ onMounted(async () => {
       lastModified.value = new Date().toLocaleString();
       isLoadedSuccessfully.value = true;
     }catch{
+      saveFilter();
       editor.dispatch({
         changes: { from: 0, to: editor.state.doc.length, insert: '获取剪贴板内容失败，请刷新重试' }
       });
@@ -134,9 +136,20 @@ const clipStore = useClipStore();
 const saveStatusText = ref('');
 const autoSaveEnabled = ref(true);
 let lastSavedCode = ref('');
-
+let saveFilter = () =>{
+  if (!isLoadedSuccessfully.value) {
+      saveStatusText.value = '加载剪贴板失败，请刷新网页';
+      setTimeout(() => {
+        nextTick(() => {
+          saveStatusText.value = '';
+        });
+      }, 3000);
+    return false;
+  }
+  return true
+}
 let onSaveBtnClick = async () => {
-  if (!isLoadedSuccessfully.value) return;
+  if(saveFilter()) return;
   saveStatusText.value = '';
   try {
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
@@ -164,7 +177,7 @@ let onSaveBtnClick = async () => {
 };
 
 let onAutoSaveBtnClick = async () => {
-  if (!isLoadedSuccessfully.value) return;
+  if(saveFilter()) return;
   try {
     saveStatusText.value = '';
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
