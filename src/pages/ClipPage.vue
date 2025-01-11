@@ -227,12 +227,13 @@ onBeforeUnmount(() => {
         <div class="text-sm text-gray-500 ml-4" v-if="lastModified">
           最后修改: {{ lastModified }}
         </div>
+
+        <div style="margin-left: auto;"></div>
+        <div class="save-status" :class="{'error': saveStatusText.includes('失败')}" v-if="saveStatusText">{{ saveStatusText }}</div>
         <div class="flex items-center ml-4">
           <input type="checkbox" id="auto-save" v-model="autoSaveEnabled" class="mr-2" />
           <label for="auto-save" class="text-sm">变动时自动保存</label>
         </div>
-        <div style="margin-left: auto;"></div>
-        <div class="save-status" :class="{'error': saveStatusText.includes('失败')}" v-if="saveStatusText">{{ saveStatusText }}</div>
         <button class="save-btn ml-2" @click="onSaveBtnClick">{{ $t('common.save') }}</button>
       </div>
     </div>

@@ -1,6 +1,9 @@
-<h1 align="center">FileWorker</h1>
+<h1 align="center">FileFreeStation</h1>
 
-FileWorker 是一个轻量级的文件管理和在线剪贴板，基于 Cloudflare Pages 和 R2。
+FileFreeStation 是一个轻量级的文件传递和在线剪贴板，基于 Cloudflare Pages 、 R2 和 离线动态二维码。
+
+本项目基于FileWorder改造，包括以下改动
+- 支持无密码登录、
 
 ## ✏️部署
 
