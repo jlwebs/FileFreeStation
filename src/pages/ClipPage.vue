@@ -128,6 +128,7 @@ const autoSaveEnabled = ref(true);
 let lastSavedCode = ref('');
 
 let onSaveBtnClick = async () => {
+  saveStatusText.value = '';
   try {
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
     modified.value = false;
@@ -155,6 +156,7 @@ let onSaveBtnClick = async () => {
 
 let onAutoSaveBtnClick = async () => {
   try {
+    saveStatusText.value = '';
     await PutFile(filename.value, code.value, clipStore.visibility, "text");
     modified.value = false;
     saveToLocalStorage(filename.value, code.value);
@@ -171,6 +173,7 @@ let onAutoSaveBtnClick = async () => {
     saveStatusText.value = '自动保存剪贴板内容失败...';
     setTimeout(() => {
       saveStatusText.value = '';
+      console.log(saveStatusText)
     }, 3000);
   }
 };
