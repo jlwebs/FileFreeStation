@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { nextTick } from 'vue';
 import { minimalSetup } from "codemirror"
 import { EditorState } from "@codemirror/state"
 import { EditorView, lineNumbers, highlightSpecialChars, drawSelection, dropCursor } from "@codemirror/view"
@@ -143,8 +144,11 @@ let onSaveBtnClick = async () => {
     saveStatusText.value = '保存剪贴板内容失败，请重试' 
   }
 
+  import { nextTick } from 'vue';
   setTimeout(() => {
-    saveStatusText.value = '';
+    nextTick(() => {
+      saveStatusText.value = '';
+    });
   }, 3000);
 };
 
