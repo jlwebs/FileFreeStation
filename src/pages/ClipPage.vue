@@ -117,6 +117,9 @@ onMounted(async () => {
       lastModified.value = '';
     }
     }
+  }else{
+    // mode=open 新增剪贴板模式
+    isLoadedSuccessfully.value = true;
   }
   
   editor.requestMeasure({
